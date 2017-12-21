@@ -30,7 +30,7 @@ usage (char *commandline)
 	  " -center <image>            Render an image centered on screen\n"
 	  " -tile <image>              Render an image tiled\n"
 	  " -full <image>              Render an image maximum aspect\n"
-	  " -fill <image>              Render an image strechted\n"
+	  " -fill <image>              Render an image stretched\n"
 	  "\n"
 	  "Manipulations:\n"
 	  " -tint <color>	             Tint the current image\n"
@@ -572,6 +572,11 @@ main (int argc, char **argv)
 		}
 	      imlib_save_image (argv[i]);
 	    }
+	  else if (strcmp (argv[i], "-v") == 0 || strcmp (argv[i], "--version") == 0)
+            {
+              printf ("%s\n", PACKAGE_STRING);
+              exit (0);
+            }
 	  else
 	    {
 	      usage (argv[0]);

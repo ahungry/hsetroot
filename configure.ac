@@ -16,10 +16,10 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 # Process this file with autoconf to produce a configure script.
-# 
+#
 
 AC_PREREQ(2.52)
-AC_INIT([hsetroot], [1.0.2], [hyriand@thegraveyard.org])
+AC_INIT([hsetroot], [2.0.0], [hyriand@thegraveyard.org])
 AC_CONFIG_AUX_DIR(config)
 AM_INIT_AUTOMAKE()
 AM_MAINTAINER_MODE
