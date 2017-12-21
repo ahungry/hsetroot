@@ -1,5 +1,6 @@
 # hsetroot - an imlib2 powered wallpaper application
 # Copyright (C) 2003 Hyriand - See COPYING
+# Copyright (C) 2017 Matthew Carter <m@ahungry.com> - See COPYING
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,7 +20,8 @@
 #
 
 AC_PREREQ(2.52)
-AC_INIT([hsetroot], [2.0.0], [hyriand@thegraveyard.org])
+# Originally hyriand@thegraveyard.org, but I don't think he'll maintain my changes...
+AC_INIT([hsetroot], [2.0.0], [m@ahungry.com])
 AC_CONFIG_AUX_DIR(config)
 AM_INIT_AUTOMAKE()
 AM_MAINTAINER_MODE

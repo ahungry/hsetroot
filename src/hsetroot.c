@@ -8,15 +8,18 @@
 #include "config.h"
 
 typedef enum
-{ Full, Fill, Center, Tile } ImageMode;
+  { Full, Fill, Center, Tile, Left, Right } ImageMode;
 
 void
 usage (char *commandline)
 {
   printf (PACKAGE_STRING " - " DESCRIPTION "\n"
 	  "\n"
-	  "Syntaxis: %s [command1 [arg1..]] [command2 [arg1..]]..."
+	  "Syntax is: %s [command1 [arg1..]] [command2 [arg1..]]..."
 	  "\n"
+          "Usage:\n"
+	  " -h                         Show this help.\n"
+	  " -v|--version               Print the version.\n"
 	  "Gradients:\n"
 	  " -add <color>               Add color to range using distance 1\n"
 	  " -addd <color> <distance>   Add color to range using custom distance\n"
@@ -33,6 +36,9 @@ usage (char *commandline)
 	  " -fill <image>              Render an image stretched\n"
 	  "\n"
 	  "Manipulations:\n"
+	  " -left 	               Align the image to the left (only with -full).\n"
+	  " -right 	               Align the image to the right (only with -full).\n"
+	  " -fanciful 	               Draw a fancy blurred background (only with -full).\n"
 	  " -tint <color>	             Tint the current image\n"
 	  " -blur <radius>             Blur the current image\n"
 	  " -sharpen <radius>          Sharpen the current image\n"
@@ -55,6 +61,11 @@ usage (char *commandline)
 // Globals:
 Display *display;
 int screen;
+
+// Cool globals bro
+int align_left = 0;
+int align_right = 0;
+int fanciful = 0;
 
 // Adapted from fluxbox' bsetroot
 int
@@ -206,7 +217,22 @@ load_image (ImageMode mode, const char *arg, int rootW, int rootH, int alpha,
       if ((int) (imgH * aspect) > rootH)
 	aspect = (double) rootH / (double) imgH;
       top = (rootH - (int) (imgH * aspect)) / 2;
+
+      // If neither left or right options are set, center it.
       left = (rootW - (int) (imgW * aspect)) / 2;
+
+      // If left was set, align to the left
+      if (align_left) left = 0;
+      if (align_right) left = (rootW - (int) (imgW * aspect));
+
+      // Draw a background of the stretched image before the full one.
+      if (fanciful)
+        {
+          imlib_blend_image_onto_image (buffer, 0, 0, 0, imgW, imgH,
+                                        0, 0, rootW, rootH);
+          imlib_image_blur (fanciful);
+      }
+
       imlib_blend_image_onto_image (buffer, 0, 0, 0, imgW, imgH,
 				    left, top, (int) (imgW * aspect),
 				    (int) (imgH * aspect));
@@ -476,6 +502,30 @@ main (int argc, char **argv)
 
 	      imlib_set_color_modifier_tables (r, g, b, a);
 	    }
+          else if (strcmp (argv[i], "-fanciful") == 0)
+            {
+	      int intval;
+	      if ((++i) >= argc)
+		{
+		  fprintf (stderr, "Missing value\n");
+		  continue;
+		}
+	      if (sscanf (argv[i], "%i", &intval) == 0)
+		{
+		  fprintf (stderr, "Bad value (%s)\n", argv[i]);
+		  continue;
+		}
+
+              fanciful = intval;
+            }
+          else if (strcmp (argv[i], "-left") == 0)
+            {
+              align_left = 1;
+            }
+          else if (strcmp (argv[i], "-right") == 0)
+            {
+              align_right = 1;
+            }
 	  else if (strcmp (argv[i], "-blur") == 0)
 	    {
 	      int intval;
